@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Tienda - Colores de Chiapas</title>
+  <link rel="stylesheet" href="/css/style.css">
+  <link rel="stylesheet" href="/css/tienda.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+  <script>
+    // Establecer sessionStorage para indicar que la página es de tienda
+    sessionStorage.setItem('origen', 'tienda');
+  </script>
+  <!-- Header dinámico -->
+  <div id="header-container"></div>
+
+  <main class="tienda-container">
+    <!-- Filtros laterales -->
+    <aside class="filtros">
+      <h2>Filtrar por</h2>
+      
+      <!-- Filtro por categoría -->
+      <div class="filtro-group">
+        <h3>Categoría</h3>
+        <ul class="filtro-list" id="filtro-categorias">
+          <!-- Se llena dinámicamente -->
+        </ul>
+      </div>
+      
+      <!-- Filtro por precio -->
+      <div class="filtro-group">
+        <h3>Rango de precio</h3>
+        <div class="price-range">
+          <input type="range" id="price-slider" min="0" max="10000" step="100" value="10000">
+          <div class="price-values">
+            <span id="min-price">$0</span>
+            <span id="max-price">$10,000</span>
+          </div>
+        </div>
+      </div>
+      
+      <!-- Filtro por artesano -->
+      <div class="filtro-group">
+        <h3>Artesano</h3>
+        <ul class="filtro-list" id="filtro-artesanos">
+          <!-- Se llena dinámicamente -->
+        </ul>
+      </div>
+      
+      <!-- Filtro por color -->
+      <div class="filtro-group">
+        <h3>Color</h3>
+        <div class="color-filters" id="filtro-colores">
+          <!-- Se llena dinámicamente -->
+        </div>
+      </div>
+    </aside>
+
+    <!-- Contenido principal -->
+    <section class="productos-grid">
+      <h1>Nuestros Productos</h1>
+      <div class="grid-container" id="productos-grid">
+        <!-- Productos se cargan aquí dinámicamente -->
+      </div>
+    </section>
+  </main>
+
+<!-- Footer dinámico -->
+<div id="footer-container"></div>
+
+<!-- Template para tarjetas de producto -->
+<template id="producto-template">
+  <article class="producto-card">
+    <div class="producto-imagen-container">
+      <img class="producto-imagen" src="" alt="">
+    </div>
+    <div class="producto-info">
+      <h3 class="producto-nombre"></h3>
+      <p class="producto-precio"></p>
+    </div>
+  </article>
+</template>
+
+<!-- Script de tienda -->
+<script src="/js/pages/tienda.js" type="module"></script>
+
+<!-- Cargar header/footer y luego busqueda.js -->
+<script type="module">
+  import { cargarHeader } from '/js/components/cargarHeader.js';
+
+  cargarHeader().then(() => {
+    const script = document.createElement('script');
+    script.src = '/js/pages/busqueda.js';
+    script.type = 'module';
+    document.body.appendChild(script);
+  });
+</script>
+</body>
+</html>

@@ -1,90 +1,85 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Colores de Chiapas</title>
-  <link rel="stylesheet" href="css/style.css">
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Colores de Chiapas - Artesanías Mexicanas</title>
+  <link rel="stylesheet" href="/css/style.css"/>
+  <link rel="stylesheet" href="/css/inicio.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"/>
+
+  <style>
+    .hero, .productos-destacados {
+      opacity: 0;
+      transition: opacity 0.5s ease;
+    }
+    .loaded {
+      opacity: 1;
+    }
+  </style>
 </head>
 <body>
-  <header class="header">
-    <!-- Logo local -->
-    <div class="logo-container">
-      <img src="assets/img/logo.png" alt="Logo Colores de Chiapas" class="logo">
+  <!-- Header dinámico -->
+  <div id="header-container"></div>
+
+  <!-- Hero principal -->
+  <section class="hero" id="main-hero">
+    <div class="hero-content">
+      <h1>Artesanías con Alma de Chiapas</h1>
+      <p>Descubre la magia hecha a mano por nuestros artesanos</p>
+      <a href="/tienda.html" class="btn-hero">Explora la Tienda</a>
     </div>
+  </section>
 
-    <!-- Navegación central -->
-    <nav class="nav">
-      <ul>
-        <li><a href="#">Principal</a></li>
-        <li><a href="#">Tienda</a></li>
-        <li><a href="#">Mayoreo</a></li>
-        <li><a href="#">¿Quiénes somos?</a></li>
-      </ul>
-    </nav>
+  <!-- Mensaje inspirador -->
+  <section class="inspiration-message">
+    <h2>"Cada pieza cuenta una historia"</h2>
+    <p>Nuestros artesanos trabajan con tradiciones centenarias para crear piezas únicas</p>
+  </section>
 
-    <!-- Iconos derecha (ahora con imágenes locales) -->
-    <div class="iconos">
-      <button class="btn-icono" id="btn-busqueda">
-        <img src="assets/icons/lupa.png" alt="Buscar" class="icono-local">
-        <span class="sr-only">Buscar productos</span>
-      </button>
-      <button class="btn-icono" id="btn-carrito">
-        <img src="assets/icons/carrito.png" alt="Carrito" class="icono-local">
-        <span class="contador-carrito">0</span>
-      </button>
-    </div>
-  </header>
-
-  <main style="min-height: 300px; background: #f5f5f5; display: grid; place-items: center;">
-    <p style="color: #333;">(Contenido principal - En desarrollo)</p>
+  <!-- Contenedor dinámico para productos destacados -->
+  <main class="productos-destacados container" id="productos-destacados">
+    <!-- Aquí se insertarán las tarjetas desde inicio.js -->
   </main>
 
-  <script src="js/main.js"></script>
+  <!-- Preview sección "Quiénes somos" -->
+  <section class="about-preview">
+    <h2>Nuestra Historia</h2>
+    <p>Una cooperativa dedicada a preservar las técnicas artesanales tradicionales...</p>
+    <a href="/quienes-somos.html" class="btn-about">Conócenos Más</a>
+  </section>
 
-<footer class="footer">
-    <div class="footer-contenido">
-      <!-- Sección de contacto -->
-      <div class="footer-seccion">
-        <h3>Contacto</h3>
-        <ul class="footer-lista">
-          <li>
-            <i class="icono-footer fas fa-envelope"></i>
-            artesanas@coloreschiapas.com
-          </li>
-          <li>
-            <i class="icono-footer fas fa-phone"></i>
-            +52 961 123 4567
-          </li>
-          <li>
-            <i class="icono-footer fas fa-map-marker-alt"></i>
-            Tuxtla Gutierrez, Chiapas
-          </li>
-        </ul>
-      </div>
-  
-      <!-- Redes sociales -->
-      <div class="footer-seccion">
-        <h3>Síguenos</h3>
-        <div class="redes-sociales">
-          <a href="#" aria-label="Facebook">
-            <i class="fab fa-facebook-f"></i>
-          </a>
-          <a href="#" aria-label="Instagram">
-            <i class="fab fa-instagram"></i>
-          </a>
-          <a href="#" aria-label="WhatsApp">
-            <i class="fab fa-whatsapp"></i>
-          </a>
-        </div>
-      </div>
-  
-      <!-- Derechos de autor -->
-      <div class="footer-derechos">
-        <p>© 2025 Colores de Chiapas. Todos los derechos reservados.</p>
-      </div>
-    </div>
-  </footer>
+  <!-- Footer dinámico -->
+  <div id="footer-container"></div>
+
+  <!-- Scripts -->
+  <script>
+    // Precarga de header y footer
+    Promise.all([
+      fetch('partials/header.html').then(r => r.text()),
+      fetch('partials/footer.html').then(r => r.text())
+    ]).then(([header, footer]) => {
+      document.getElementById('header-container').innerHTML = header;
+      document.getElementById('footer-container').innerHTML = footer;
+    });
+
+    // Animación de carga visual
+    document.addEventListener('DOMContentLoaded', () => {
+      setTimeout(() => {
+        document.querySelectorAll('.hero, .productos-destacados')
+          .forEach(el => el.classList.add('loaded'));
+      }, 100);
+    });
+  </script>
+  <script type="module">
+    import { cargarHeader } from '/js/components/cargarHeader.js';
+    cargarHeader().then(() => {
+      const script = document.createElement('script');
+      script.src = '/js/pages/busqueda.js';
+      script.type = 'module';
+      document.body.appendChild(script);
+    });
+  </script>
+  <script src="/js/pages/inicio.js" type="module"></script>
 </body>
 </html>

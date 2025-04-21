@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Detalle del Producto</title>
+  <link rel="stylesheet" href="/css/style.css" />
+  <link rel="stylesheet" href="/css/producto.css" />
+</head>
+<body>
+
+  <!-- Header -->
+  <div id="header-placeholder"></div>
+
+  <!-- Página de producto -->
+  <main class="producto-page">
+    
+    <!-- Imagen grande del producto -->
+    <section class="producto-imagen">
+      <img src="/img/ejemplo-producto.jpg" alt="Imagen del producto artesanal" />
+    </section>
+
+    <!-- Detalles del producto -->
+    <section class="producto-detalles">
+      <h1>Producto</h1>
+      <span class="producto-etiqueta">Tipo</span>
+      <p class="producto-precio">
+        <span class="precio-original">$00.00 MXN</span>
+        <span class="precio-mayoreo" style="display: none;">$00.00 MXN</span>
+      </p>
+      
+      <!-- Selector de color -->
+      <div class="selector-colores">
+        <!-- Aquí se insertan los colores dinámicamente -->
+      </div>
+      
+<!-- Selector de cantidad -->
+<div class="selector">
+  <label for="cantidad">Cantidad:</label>
+  <input type="number" min="1" value="1" id="cantidad" />
+  <span class="precio">$00.00</span> <!-- Aquí actualizamos el precio -->
+</div>
+
+
+      <!-- Botón de compra -->
+      <button class="btn-comprar">Agregar al carrito</button>
+    </section>
+  </main>
+
+  <!-- Sección de descripción -->
+  <section class="seccion-extra">
+    <h2>Descripción</h2>
+    <p>
+      cargando...
+    </p>
+  </section>
+
+  <!-- Sección del artesano -->
+  <section class="seccion-extra">
+    <h2>Sobre el artesano</h2>
+    <p>
+      cargando...
+    </p>
+  </section>
+
+  <!-- Comentarios simulados -->
+  <section class="comentarios">
+    <h2>Comentarios</h2>
+    
+    <div class="comentario">
+      <div class="estrellas">★★★★★</div>
+      <p>¡Precioso! Llegó rápido y bien empacado.</p>
+    </div>
+
+    <div class="comentario">
+      <div class="estrellas">★★★★☆</div>
+      <p>Muy bonito, aunque pensé que era un poco más grande.</p>
+    </div>
+  </section>
+
+  <!-- Novedades -->
+  <section class="novedades">
+    <h2>¿Quieres recibir novedades?</h2>
+    <p>Suscríbete con tu correo para enterarte de nuevos productos y promociones.</p>
+    <input type="email" placeholder="Tu correo electrónico" />
+    <button>Suscribirme</button>
+  </section>
+
+  <!-- Footer -->
+  <div id="footer-placeholder"></div>
+
+  <!-- Scripts -->
+  <script type="module">
+    fetch('/partials/header.html')
+      .then(res => res.text())
+      .then(data => {
+        document.getElementById('header-placeholder').innerHTML = data;
+  
+        // Cargar script de búsqueda después de insertar el header
+        const script = document.createElement('script');
+        script.src = '/js/pages/busqueda.js';
+        document.body.appendChild(script);
+      });
+  
+    fetch('/partials/footer.html')
+      .then(res => res.text())
+      .then(data => {
+        document.getElementById('footer-placeholder').innerHTML = data;
+      });
+  </script>
+  <script src="/js/pages/producto.js"></script>
+</body>
+</html>

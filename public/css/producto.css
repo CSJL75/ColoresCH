@@ -1,0 +1,205 @@
+body.cargando main,
+body.cargando .seccion-extra {
+  display: none;
+}
+
+  /* Estructura principal de la página de producto */
+  .producto-page {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 2rem;
+    padding: 2rem;
+    max-width: 1200px;
+    margin: 0 auto;
+  }
+  
+  /* Imagen del producto */
+  .producto-imagen {
+    flex: 1 1 400px;
+    max-width: 500px;
+  }
+  .producto-imagen img {
+    width: 100%;
+    height: auto;
+    border-radius: 12px;
+    box-shadow: var(--sombra-suave);
+  }
+  
+  /* Detalles del producto */
+  .producto-detalles {
+    flex: 1 1 400px;
+    background-color: rgba(255, 255, 255, 0.8);
+    padding: 2rem;
+    border-radius: 12px;
+    box-shadow: var(--sombra-suave);
+    display: flex;
+    flex-direction: column;
+    gap: 1.2rem;
+  }
+  
+  /* Tipografía y estilo */
+  .producto-detalles h1 {
+    font-size: 2rem;
+    margin: 0;
+  }
+  .producto-etiqueta {
+    display: inline-block;
+    background-color: var(--color-header);
+    color: var(--color-texto-header);
+    padding: 0.3rem 0.8rem;
+    font-size: 0.9rem;
+    border-radius: 20px;
+  }
+/* Precios */
+.producto-precio {
+  font-size: 1.8rem;
+  font-weight: bold;
+  color: #a4243c; /* Para tienda */
+}
+
+.precio-original {
+  color: #777;
+}
+
+.precio-original.tachado {
+  text-decoration: line-through;
+}
+
+.precio-mayoreo {
+  color: #4CAF50;
+  font-weight: bold;
+}
+
+.tachado {
+  text-decoration: line-through;
+  color: #777;
+}
+
+  
+  .selector-colores {
+    display: flex;
+    gap: 0.5rem;
+  }
+  
+  .color-circulo {
+    width: 25px;
+    height: 25px;
+    border-radius: 50%;
+    border: 2px solid #ccc;
+    cursor: pointer;
+  }
+  .color-circulo.selected {
+    border: 3px solid var(--accent-color);
+  }
+
+  /* Selectores de variedad y cantidad */
+  .selector {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+  }
+  .selector label {
+    font-weight: 500;
+  }
+  .selector select,
+  .selector input {
+    padding: 0.5rem;
+    font-size: 1rem;
+    border: 1px solid #ccc;
+    border-radius: 6px;
+  }
+  
+  /* Botón de compra */
+  .btn-comprar {
+    background-color: black;
+    color: white;
+    padding: 0.8rem 1.5rem;
+    font-size: 1rem;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+  }
+  .btn-comprar:hover {
+    background-color: #333;
+  }
+  
+  /* Contenedores de descripción y artesano */
+  .seccion-extra {
+    background-color: #F8F4E3;
+    padding: 1.5rem 2rem;
+    border-radius: 12px;
+    margin: 2rem auto;
+    max-width: 1000px;
+    box-shadow: var(--sombra-suave);
+  }
+  .seccion-extra h2 {
+    margin-top: 0;
+    color: #a4243c;
+  }
+  .seccion-extra p {
+    line-height: 1.6;
+  }
+  
+  /* Comentarios */
+  .comentarios {
+    max-width: 1000px;
+    margin: 0 auto 2rem;
+  }
+  .comentarios h2 {
+    color: #a4243c;
+  }
+  .comentario {
+    background-color: #fff;
+    border-radius: 8px;
+    padding: 1rem;
+    margin-top: 1rem;
+    box-shadow: var(--sombra-suave);
+  }
+  .estrellas {
+    color: #FFD700;
+    margin-bottom: 0.5rem;
+  }
+  
+  /* Novedades */
+  .novedades {
+    width: 100%;
+    background-color: #f4a44c;
+    color: white;
+    padding: 2rem;
+    text-align: center;
+  }
+  .novedades input[type="email"] {
+    padding: 0.6rem;
+    width: 300px;
+    max-width: 90%;
+    margin-top: 1rem;
+    border: none;
+    border-radius: 4px;
+  }
+  .novedades button {
+    background-color: black;
+    color: white;
+    border: none;
+    padding: 0.6rem 1.2rem;
+    margin-left: 1rem;
+    border-radius: 4px;
+    cursor: pointer;
+  }
+  .novedades button:hover {
+    background-color: #333;
+  }
+  
+  /* Responsive */
+  @media (max-width: 768px) {
+    .producto-page {
+      flex-direction: column;
+      padding: 1rem;
+    }
+    .producto-imagen,
+    .producto-detalles {
+      flex: 1 1 100%;
+    }
+  }
+  

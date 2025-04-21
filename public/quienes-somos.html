@@ -1,0 +1,15 @@
+<script>
+  // Carga header y footer
+  Promise.all([
+    fetch('/partials/header.html').then(r => r.text()),
+    fetch('/partials/footer.html').then(r => r.text())
+  ]).then(([header, footer]) => {
+    document.getElementById('header-container').innerHTML = header;
+    document.getElementById('footer-container').innerHTML = footer;
+
+    // Aquí cargamos el script de búsqueda una vez que el header ya está en el DOM
+    const script = document.createElement('script');
+    script.src = '/js/pages/busqueda.js';
+    document.body.appendChild(script);
+  });
+</script>

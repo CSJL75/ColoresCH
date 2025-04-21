@@ -11,7 +11,21 @@
     margin: 0;
     font-family: 'Segoe UI', system-ui, sans-serif;
   }
+  body, html {
+    overflow-x: hidden;
+  }
+  * {
+    box-sizing: border-box;
+  }
   
+/* Fondo general (puedes comentar esta línea si aún no tienes imagen) */
+/*body {
+  background-image: url('/img/fondo-textil.jpg');
+  background-size: cover;
+  background-attachment: fixed;
+  background-repeat: no-repeat;
+  background-position: center;
+}
   /* Header */
   .header {
     background-color: var(--color-header);
@@ -121,6 +135,65 @@
     justify-content: center;
     font-weight: bold;
     box-shadow: 0 1px 3px rgba(0,0,0,0.2);
+  }
+  .busqueda-container {
+    position: relative;
+    display: flex;
+    flex-direction: row-reverse; /* Hace que el input aparezca a la izquierda del ícono */
+    align-items: center;
+    margin-left: 10px;
+  }
+
+  /* Mejora el área clickeable del botón de búsqueda */
+  #btn-busqueda {
+    padding: 10px;
+    width: 48px;
+    height: 48px;
+  }
+  
+#btn-busqueda img {
+  width: 24px;
+  height: 24px;
+  object-fit: contain;
+}
+
+  #input-busqueda {
+    padding: 6px 10px;
+    border: 1px solid #ccc;
+    border-radius: 20px;
+    font-size: 14px;
+    width: 200px;
+    transition: all 0.3s ease;
+  }
+#input-busqueda,
+#resultados-busqueda {
+  display: none;
+}
+
+.resultados-sugerencias {
+  position: absolute;
+  top: 100%; /* Se coloca justo debajo del input */
+  left: 0;
+  width: 100%;
+  z-index: 20;
+  margin-top: 4px;
+  list-style: none;
+  background: white;
+  border: 1px solid #ddd;
+  border-radius: 5px;
+  max-height: 200px;
+  overflow-y: auto;
+  display: none;
+}
+
+  
+  .resultados-sugerencias li {
+    padding: 8px 12px;
+    cursor: pointer;
+  }
+  
+  .resultados-sugerencias li:hover {
+    background-color: #f0f0f0;
   }
   
   /* Accesibilidad */
@@ -259,3 +332,91 @@
       margin-bottom: 1.5rem;
     }
   }
+
+  
+  /* Contenedor principal */
+  .container {
+    width: 100%;
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 0 15px;
+  }
+
+/* Hero Section ajustada */
+.hero {
+  background-image: url('/img/hero-artesania.jpg'); /* Asegúrate de tener esta imagen */
+  background-size: cover;
+  background-position: center;
+  color: white;
+  text-align: center;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 2rem;
+  position: relative;
+}
+.hero::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.4); /* Oscurece para mejor legibilidad */
+}
+.hero-content {
+  position: relative;
+  z-index: 1;
+}
+
+
+/* Grid de productos más compacto */
+.main-grid {
+  grid-template-columns: repeat(3, 1fr);
+  grid-template-rows: 400px auto 300px;
+  gap: 15px;
+  margin: 30px auto;
+}
+
+.featured-product {
+  grid-column: span 3;
+  background-size: cover;
+  background-position: center;
+  border-radius: 8px;
+  overflow: hidden;
+  position: relative;
+  box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+}
+
+.product-tile {
+  background-size: cover;
+  background-position: center;
+  border-radius: 8px;
+  overflow: hidden;
+  position: relative;
+  box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+  transition: transform 0.3s ease;
+}
+
+.product-tile:hover {
+  transform: translateY(-5px);
+}
+
+/* Overlay mejorado */
+.tile-overlay {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  background: rgba(164, 36, 60, 0.85);
+  color: white;
+  padding: 20px;
+  transform: translateY(100%);
+  transition: transform 0.3s ease;
+}
+
+.product-tile:hover .tile-overlay {
+  transform: translateY(0);
+}
+
+.product-name {
+  font-size: 1.2rem;
+  margin-bottom: 5px;
+}
