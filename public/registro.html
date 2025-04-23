@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Registro - Colores de Chiapas</title>
+  <link rel="stylesheet" href="/css/style.css">
+  <link rel="stylesheet" href="/css/registro.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+  <!-- Header dinámico -->
+  <div id="header-container"></div>
+
+  <main class="registro-container">
+    <section class="formulario-registro">
+      <h1>Registro de Usuario</h1>
+      <form id="formRegistro">
+        <input type="text" id="nombre_usuario" placeholder="Nombre de usuario" required />
+        <input type="email" id="correo" placeholder="Correo electrónico" required />
+        <input type="password" id="contrasena" placeholder="Contraseña" required />
+        <input type="password" id="confirmarContrasena" placeholder="Confirmar contraseña" required />
+        <button type="submit">Registrarse</button>
+      </form>
+      
+    </section>
+  </main>
+
+  <!-- Footer dinámico -->
+  <div id="footer-container"></div>
+
+  <!-- Cargar header y footer -->
+  <script>
+    Promise.all([
+      fetch('/partials/header.html').then(r => r.text()),
+      fetch('/partials/footer.html').then(r => r.text())
+    ]).then(([header, footer]) => {
+      document.getElementById('header-container').innerHTML = header;
+      document.getElementById('footer-container').innerHTML = footer;
+    });
+  </script>
+  <script type="module" src="/src/registro.js"></script>
+</body>
+</html>

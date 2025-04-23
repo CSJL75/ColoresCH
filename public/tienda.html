@@ -88,13 +88,16 @@
 
 <!-- Cargar header/footer y luego busqueda.js -->
 <script type="module">
-  import { cargarHeader } from '/js/components/cargarHeader.js';
+  import { cargarHeader, cargarFooter } from '/js/components/cargarHeader.js';
 
   cargarHeader().then(() => {
-    const script = document.createElement('script');
-    script.src = '/js/pages/busqueda.js';
-    script.type = 'module';
-    document.body.appendChild(script);
+    // Después de cargar el header, cargamos el footer
+    cargarFooter().then(() => {
+      const script = document.createElement('script');
+      script.src = '/js/pages/busqueda.js';
+      script.type = 'module';
+      document.body.appendChild(script);
+    });
   });
 </script>
 </body>

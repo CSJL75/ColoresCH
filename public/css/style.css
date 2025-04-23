@@ -44,7 +44,7 @@
     width: 180px;
   }
   .logo {
-    height: 60px;
+    height: 100px;
     width: auto;
     transition: transform 0.3s;
   }
@@ -117,6 +117,67 @@
   }
   .btn-icono:hover .icono-local {
     transform: scale(1.15);
+  }
+  .menu-usuario {
+    position: absolute;
+    background-color: white;
+    border: 1px solid #ddd;
+    padding: 8px 12px;
+    border-radius: 8px;
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.2);
+    right: 10px;
+    top: 40px;
+    display: flex;
+    flex-direction: column;
+    z-index: 100;
+  }
+  
+  .menu-usuario a {
+    text-decoration: none;
+    color: #333;
+    padding: 6px 0;
+    transition: background 0.2s;
+  }
+  
+  .menu-usuario a:hover {
+    background-color: #f0f0f0;
+  }
+  
+  .usuario-logueado {
+    position: relative;
+    cursor: pointer;
+  }
+  
+  .usuario-nombre {
+    margin-left: 8px;
+    font-weight: bold;
+    cursor: pointer;
+  }
+  
+  .oculto {
+    display: none;
+  }
+
+  .dropdown-menu {
+    display: none;
+    position: absolute;
+    top: 30px;
+    background: white;
+    border: 1px solid #ccc;
+    padding: 8px;
+    z-index: 10;
+    border-radius: 6px;
+  }
+  
+  .dropdown-menu.visible {
+    display: block;
+  }
+  
+  .dropdown-menu a {
+    display: block;
+    padding: 4px;
+    color: #333;
+    text-decoration: none;
   }
   
   /* Contador carrito */

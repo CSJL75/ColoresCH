@@ -43,7 +43,7 @@
   </template>
 
 <!-- Cargar header y footer -->
-<script>
+<script type="module">
   Promise.all([
     fetch('/partials/header.html').then(r => r.text()),
     fetch('/partials/footer.html').then(r => r.text())
@@ -53,16 +53,13 @@
 
     // Ahora sí, carga los scripts necesarios para la página
     const scriptProductos = document.createElement('script');
-    scriptProductos.src = '/js/services/productosService.js';
     document.body.appendChild(scriptProductos);
 
     // Script específico de mayoreo
     const scriptMayoreo = document.createElement('script');
-    scriptMayoreo.src = '/js/pages/mayoreo.js'; // Ajusta la ruta según donde tengas este script
     document.body.appendChild(scriptMayoreo);
     
     const scriptBusqueda = document.createElement('script');
-    scriptBusqueda.src = '/js/pages/busqueda.js';
     document.body.appendChild(scriptBusqueda);
   });
 </script>
@@ -87,8 +84,6 @@
 <script>
   // Espera que todo esté cargado
   document.addEventListener('DOMContentLoaded', () => {
-    // Ahora la función debe estar definida
-    cargarProductosMayoreo();
   });
 </script>
   <script src="/js/pages/mayoreo.js" type="module"></script>

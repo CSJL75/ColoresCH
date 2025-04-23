@@ -1,0 +1,75 @@
+/* Estilo general para la página de registro */
+.registro-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+    background-color: #f0f0f0;
+    padding: 20px;
+  }
+  
+  .formulario-registro {
+    background-color: #F8F4E3;
+    padding: 2rem;
+    border-radius: 8px;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+    width: 100%;
+    max-width: 400px;
+  }
+  
+  .formulario-registro h1 {
+    text-align: center;
+    color: #333;
+    font-size: 2rem;
+    margin-bottom: 1.5rem;
+  }
+  
+  .formulario-registro label {
+    display: block;
+    margin-bottom: 0.5rem;
+    font-weight: bold;
+    color: #555;
+  }
+  
+  .formulario-registro input {
+    width: 100%;
+    padding: 0.8rem;
+    margin-bottom: 1rem;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    font-size: 1rem;
+  }
+  
+  .formulario-registro input:focus {
+    outline: none;
+    border-color: #FF7F00;
+  }
+  
+  .formulario-registro button {
+    width: 100%;
+    padding: 1rem;
+    background-color: #FF7F00;
+    color: white;
+    border: none;
+    border-radius: 4px;
+    font-size: 1.2rem;
+    cursor: pointer;
+    transition: background-color 0.3s;
+  }
+  
+  .formulario-registro button:hover {
+    background-color: #FF9F33;
+  }
+  
+  .formulario-registro button:disabled {
+    background-color: #ccc;
+    cursor: not-allowed;
+  }
+  
+  @media (max-width: 768px) {
+    .formulario-registro {
+      width: 100%;
+      padding: 1.5rem;
+    }
+  }
+  

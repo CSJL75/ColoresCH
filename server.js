@@ -1,17 +1,37 @@
 require('dotenv').config();
 const express = require('express');
+const session = require('express-session');
+const app = express();
 const pool = require('./database/connection');
 const path = require('path');
 const cors = require('cors');
+const bcrypt = require('bcryptjs');
 
-const app = express();
+// Configura CORS PRIMERO
+app.use(cors({
+  origin: 'http://localhost:3000',
+  credentials: true,
+  exposedHeaders: ['set-cookie'] // 👈 Permite ver cookies en frontend
+}));
 
-// Middlewares esenciales
-app.use(cors());
-app.use(express.json());
-app.use(express.static(path.join(__dirname, 'public'))); // Ruta absoluta para archivos estáticos
+// Sesiones
+app.use(session({
+  secret: process.env.SESSION_SECRET || 'fallback-secret',
+  name: 'node.sid', // Nombre personalizado para evitar conflictos
+  resave: false,
+  saveUninitialized: false,
+  cookie: {
+    secure: false, // true en producción (HTTPS)
+    httpOnly: true,
+    domain: 'localhost', // 👈 ¡Crítico! Fuerza el dominio correcto
+    sameSite: 'lax',
+    maxAge: 24 * 60 * 60 * 1000 // 1 día
+  }
+}));
 
 // Middleware de seguridad
+app.use(express.json());
+app.use(express.urlencoded({ extended: true }));
 app.use((req, res, next) => {
   res.setHeader('X-Content-Type-Options', 'nosniff');
   res.setHeader('X-Frame-Options', 'DENY');
@@ -19,7 +39,136 @@ app.use((req, res, next) => {
   next();
 });
 
-// --- RUTAS API PARA FRONTEND ---
+app.use(express.static(path.join(__dirname, 'public')));
+app.use('/partials', express.static(path.join(__dirname, 'public/partials')));
+
+// --- RUTAS API PARA FRONTEND --
+app.get('/api/usuario', (req, res) => {
+  console.log('✅ Ruta /api/usuario alcanzada'); // 👈 Nuevo log
+  console.log('Cookies recibidas:', req.headers.cookie);
+  console.log('Sesión:', req.session);
+  
+  if (req.session.usuario) {
+    res.json({ usuario: req.session.usuario });
+  } else {
+    res.status(401).json({ error: 'No autenticado' });
+  }
+});
+
+app.get('/sesion.html', (req, res) => {
+  if (req.session.usuario) {
+    return res.redirect('/');
+  }
+  res.sendFile(path.join(__dirname, 'public/sesion.html'));
+});
+
+// Registro (/api/registro)
+const { enviarCorreo } = require('./public/src/utils/mailer.js');
+
+app.post('/api/registro', async (req, res) => {
+  const { nombre_usuario, correo, contrasena } = req.body;
+
+  if (!nombre_usuario || !correo || !contrasena) {
+    return res.status(400).json({ error: 'Faltan datos' });
+  }
+
+  try {
+    const saltRounds = 10;
+    const hash = await bcrypt.hash(contrasena, saltRounds);
+
+    await pool.query(`
+      INSERT INTO usuarios (nombre_usuario, correo, contrasena)
+      VALUES (?, ?, ?)`, [nombre_usuario, correo, hash]);
+
+    // 📧 Enviar correo de bienvenida
+    await enviarCorreo({
+      to: correo,
+      subject: '¡Bienvenido a Colores de Chiapas!',
+      html: `
+        <h1>Hola, ${nombre_usuario}</h1>
+        <p>Gracias por registrarte en nuestra plataforma de artesanías.</p>
+        <p>¡Estamos encantados de que te unas a nuestra comunidad!</p>
+        <p>Saludos,<br>El equipo de Artesanías MX</p>
+      `
+    });
+
+    // Respuesta de éxito
+    res.status(201).json({ success: true, message: 'Usuario registrado correctamente' });
+  } catch (err) {
+    console.error('Error al registrar usuario:', err.message);
+    res.status(500).json({ error: 'Error al registrar usuario', message: err.message });
+  }
+});
+
+
+//Login (/api/login)
+app.post('/api/login', async (req, res) => {
+  const { correo, contrasena } = req.body;
+
+  if (!correo || !contrasena) {
+    return res.status(400).json({ error: 'Faltan datos' });
+  }
+
+  try {
+    const [usuarios] = await pool.query(
+      'SELECT * FROM usuarios WHERE correo = ?', [correo]);
+
+    const usuario = usuarios[0];
+    if (!usuario) return res.status(401).json({ error: 'Usuario no encontrado' });
+
+    const coincide = await bcrypt.compare(contrasena, usuario.contrasena);
+    if (!coincide) return res.status(401).json({ error: 'Contraseña incorrecta' });
+    
+    // 💾 Guarda usuario en la sesión
+    req.session.usuario = {
+      id: usuario.id,
+      nombre_usuario: usuario.nombre_usuario,
+      correo: usuario.correo
+    };
+    console.log('Sesión después de login:', req.session);
+
+    res.json({ success: true, usuario: req.session.usuario });
+  } catch (err) {
+    res.status(500).json({ error: 'Error al iniciar sesión', message: err.message });
+  }
+});
+
+// Direcciones por usuario (/api/direcciones)
+app.post('/api/direcciones', async (req, res) => {
+  const { usuario_id, direccion, ciudad, estado, codigo_postal } = req.body;
+
+  if (!usuario_id || !direccion) {
+    return res.status(400).json({ error: 'Faltan datos' });
+  }
+
+  try {
+    await pool.query(`
+      INSERT INTO direcciones (usuario_id, direccion, ciudad, estado, codigo_postal)
+      VALUES (?, ?, ?, ?, ?)`,
+      [usuario_id, direccion, ciudad, estado, codigo_postal]);
+
+    res.json({ success: true });
+  } catch (err) {
+    res.status(500).json({ error: 'Error al guardar dirección', message: err.message });
+  }
+});
+
+
+app.get('/api/direcciones/:usuario_id', async (req, res) => {
+  try {
+    const [direcciones] = await pool.query('SELECT * FROM direcciones WHERE usuario_id = ?', [req.params.usuario_id]);
+    res.json(direcciones);
+  } catch (err) {
+    res.status(500).json({ error: 'Error al obtener direcciones' });
+  }
+});
+
+app.post('/api/logout', (req, res) => {
+  req.session.destroy(err => {
+    if (err) return res.status(500).json({ mensaje: 'Error al cerrar sesión' });
+    res.json({ mensaje: 'Sesión cerrada' });
+  });
+});
 
 // Endpoint para obtener categorías (necesario para filtros)
 app.get('/api/categorias', async (req, res) => {
@@ -170,26 +319,18 @@ app.get('/api/productos/:id', async (req, res) => {
 });
 
 // Endpoint para productos destacados
-// Endpoint para productos destacados
 app.get('/api/productos/destacados', async (req, res) => {
   try {
-    const [productos] = await pool.query(`  // Cambié connection.query por pool.query
-      SELECT 
-        p.id, p.nombre, p.descripcion, p.categoria, p.precio, 
-        v.imagen_url, v.color_hex 
-      FROM productos p
-      JOIN variedades v ON p.id = v.producto_id
-      GROUP BY p.id
-      ORDER BY RAND()
-      LIMIT 5
+    const [rows] = await pool.query(`
+      SELECT * FROM productos WHERE destacado = 1 LIMIT 6
     `);
-
-    res.json(productos);
-  } catch (err) {
-    console.error('Error al obtener productos destacados:', err);
-    res.status(500).json({ error: 'Error al obtener productos destacados' });
+    res.json(rows);
+  } catch (error) {
+    console.error('Error al obtener productos destacados:', error);
+    res.status(500).json({ mensaje: 'Error del servidor' });
   }
 });
+
 
 
 // Manejo del carrito - Versión mejorada

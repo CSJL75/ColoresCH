@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Iniciar Sesión - Colores de Chiapas</title>
+  <link rel="stylesheet" href="/css/style.css" />
+  <link rel="stylesheet" href="/css/sesion.css" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
+</head>
+<body>
+  <!-- Header dinámico -->
+  <div id="header-container"></div>
+
+  <main id="contenido-principal">
+    <section class="sesion-container">
+      <h2>Iniciar Sesión</h2>
+      <form id="form-sesion">
+        <label for="email">Correo electrónico</label>
+        <input type="email" id="email" name="email" required placeholder="ejemplo@correo.com" />
+
+        <label for="password">Contraseña</label>
+        <input type="password" id="password" name="password" required placeholder="Tu contraseña" />
+
+        <button type="submit">Ingresar</button>
+        <p class="registrate-link">¿No tienes cuenta? <a href="/registro.html">Regístrate aquí</a></p>
+      </form>
+    </section>
+  </main>
+
+  <!-- Footer dinámico -->
+  <div id="footer-container"></div>
+
+  <script type="module">
+    import { cargarHeader, cargarFooter } from '/js/components/cargarHeader.js';
+    cargarHeader();
+    cargarFooter();
+
+    // Carga búsqueda después de insertar el header
+    const scriptBusqueda = document.createElement('script');
+    scriptBusqueda.src = '/js/pages/busqueda.js';
+    document.body.appendChild(scriptBusqueda);
+    fetch('/api/usuario', { credentials: 'same-origin' })
+  .then(res => {
+    if (res.ok) {
+      window.location.href = '/';
+    }
+  });
+  </script>
+  <script src="/src/sesion.js" type="module"></script>
+</body>
+</html>
