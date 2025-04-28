@@ -41,6 +41,18 @@ function inicializarFiltros(categorias, artesanos, productos) {
     `;
   });
 
+  // Comprobar si llegó un parámetro de categoría en la URL y marcarlo
+  const params = new URLSearchParams(window.location.search);
+  const categoriaParam = params.get('categoria');
+
+  if (categoriaParam) {
+    const checkbox = categoriasContainer.querySelector(`input[value="${categoriaParam}"]`);
+    if (checkbox) {
+      checkbox.checked = true;
+      aplicarFiltros(); // Aplicar filtros automáticamente
+    }
+  }
+
   // Filtro por artesano
   const artesanosContainer = document.getElementById('filtro-artesanos');
   artesanos.forEach(artesano => {

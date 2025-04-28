@@ -7,47 +7,46 @@
   <link rel="stylesheet" href="/css/style.css"/>
   <link rel="stylesheet" href="/css/inicio.css">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"/>
-
-  <style>
-    .hero, .productos-destacados {
-      opacity: 0;
-      transition: opacity 0.5s ease;
-    }
-    .loaded {
-      opacity: 1;
-    }
-  </style>
 </head>
 <body>
   <!-- Header dinámico -->
   <div id="header-container"></div>
 
-  <!-- Hero principal -->
-  <section class="hero" id="main-hero">
-    <div class="hero-content">
-      <h1>Artesanías con Alma de Chiapas</h1>
-      <p>Descubre la magia hecha a mano por nuestros artesanos</p>
-      <a href="/tienda.html" class="btn-hero">Explora la Tienda</a>
-    </div>
-  </section>
+<!-- Hero principal -->
+<section class="hero">
+  <div class="overlay"></div>
+  <div class="hero-content">
+    <h1>Artesanías con Alma de Chiapas</h1>
+    <p>Descubre la magia hecha a mano por nuestros artesanos</p>
+    <a href="/tienda.html" class="btn-hero">Explora la Tienda</a>
+  </div>
+</section>
 
-  <!-- Mensaje inspirador -->
-  <section class="inspiration-message">
-    <h2>"Cada pieza cuenta una historia"</h2>
-    <p>Nuestros artesanos trabajan con tradiciones centenarias para crear piezas únicas</p>
-  </section>
+<!-- Categorías -->
+<section class="categorias">
+  <h2>Explora por Categoría</h2>
+  <div class="categoria-grid">
+    <a href="/tienda.html?categoria=1" class="categoria-item alf">
+      <span>Alfarería</span>
+    </a>
+    <a href="/tienda.html?categoria=4" class="categoria-item joya">
+      <span>Joyería</span>
+    </a>
+    <a href="/tienda.html?categoria=5" class="categoria-item madera">
+      <span>Tallado en Madera</span>
+    </a>
+    <a href="/tienda.html?categoria=2" class="categoria-item vajilla">
+      <span>Vajilla</span>
+    </a>    
+  </div>
+</section>
 
-  <!-- Contenedor dinámico para productos destacados -->
-  <main class="productos-destacados container" id="productos-destacados">
-    <!-- Aquí se insertarán las tarjetas desde inicio.js -->
-  </main>
-
-  <!-- Preview sección "Quiénes somos" -->
-  <section class="about-preview">
-    <h2>Nuestra Historia</h2>
-    <p>Una cooperativa dedicada a preservar las técnicas artesanales tradicionales...</p>
-    <a href="/quienes-somos.html" class="btn-about">Conócenos Más</a>
-  </section>
+<!-- Nuestra Historia -->
+<section class="about-preview container-about">
+  <h2>Nuestra Historia</h2>
+  <p>Una cooperativa dedicada a preservar las técnicas artesanales tradicionales...</p>
+  <a href="/quienes-somos.html" class="btn-about">Conócenos Más</a>
+</section>
 
   <!-- Footer dinámico -->
   <div id="footer-container"></div>

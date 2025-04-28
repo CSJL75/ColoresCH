@@ -83,6 +83,10 @@ export async function actualizarContadorCarrito() {
     if (spanContador) {
       spanContador.textContent = contador;
       spanContador.style.display = contador > 0 ? 'inline-block' : 'none';
+
+      spanContador.classList.remove('bounce');
+      void spanContador.offsetWidth;
+      spanContador.classList.add('bounce');
     }
   } catch (error) {
     console.error('actualizarContadorCarrito Error:', error);

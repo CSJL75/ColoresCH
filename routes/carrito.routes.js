@@ -7,7 +7,7 @@ const { enviarCorreo } = require('../utils/mailer.js');
 
 router.get('/carrito/contador', async (req, res) => {
   try {
-    const usuarioId = req.session.usuario_id;
+    const usuarioId = req.session.usuario.id;
     const sesionId = req.sessionID;
 
     if (!usuarioId && !sesionId) return res.status(401).json({ error: 'No autorizado' });
@@ -24,7 +24,7 @@ router.get('/carrito/contador', async (req, res) => {
     const carritoId = carritoRows[0].id;
 
     const [rows] = await pool.query(
-      'SELECT SUM(cantidad) AS total FROM carrito_items WHERE carrito_id = ?',
+      'SELECT COUNT(*) AS total FROM carrito_items WHERE carrito_id = ?',
       [carritoId]
     );
 
