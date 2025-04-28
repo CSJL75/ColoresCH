@@ -1,4 +1,4 @@
-import { cargarHeader } from './components/cargarHeader.js';
+import { cargarHeader } from '/js/components/cargarHeader.js';
 cargarHeader();
 
 document.getElementById('formRegistro').addEventListener('submit', async (e) => {

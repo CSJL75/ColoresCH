@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Mis Direcciones</title>
+  <link rel="stylesheet" href="/css/style.css">
+  <link rel="stylesheet" href="/css/dir.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+  <div id="header-container"></div>
+  
+  <main class="contenedor-direcciones">
+    <h1 class="titulo-direcciones">Mis Direcciones</h1>
+    
+    <div class="layout-doble-columna">
+      <section id="form-section">
+        <h2>Registrar nueva dirección</h2>
+        <form id="form-direccion">
+          <input type="text" name="direccion" placeholder="Dirección" required>
+          <input type="text" name="ciudad" placeholder="Ciudad" required>
+          <input type="text" name="estado" placeholder="Estado" required>
+          <input type="text" name="codigo_postal" placeholder="Código postal" required>
+          <button type="submit">Guardar dirección</button>
+        </form>
+      </section>
+      
+      <section class="seccion-direcciones">
+        <div id="lista-direcciones"></div>
+      </section>
+    </div>
+  </main>
+  
+  <div id="footer-container"></div>
+
+  <script type="module">
+    import { cargarHeader, cargarFooter } from '/js/components/cargarHeader.js';
+  
+    cargarHeader().then(() => {
+      cargarFooter();
+    });
+  </script>
+
+  <script type="module" src="/src/direcciones.js"></script>
+</body>
+</html>

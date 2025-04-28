@@ -1,15 +1,63 @@
-<script>
-  // Carga header y footer
-  Promise.all([
-    fetch('/partials/header.html').then(r => r.text()),
-    fetch('/partials/footer.html').then(r => r.text())
-  ]).then(([header, footer]) => {
-    document.getElementById('header-container').innerHTML = header;
-    document.getElementById('footer-container').innerHTML = footer;
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>¿Quiénes Somos? - Colores de Chiapas</title>
+  <link rel="stylesheet" href="/css/style.css" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <style>
+    .quienes-somos {
+      background-color: #F8F4E3;
+      max-width: 900px;
+      margin: 80px auto;
+      padding: 2rem;
+      border-radius: 12px;
+      box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+      color: #000;
+    }
 
-    // Aquí cargamos el script de búsqueda una vez que el header ya está en el DOM
-    const script = document.createElement('script');
-    script.src = '/js/pages/busqueda.js';
-    document.body.appendChild(script);
-  });
-</script>
+    .quienes-somos h2 {
+      color: #a4243c;
+      margin-top: 0;
+    }
+
+    .quienes-somos p {
+      line-height: 1.7;
+      margin-bottom: 1.5rem;
+    }
+  </style>
+</head>
+<body>
+  <!-- Header dinámico -->
+  <div id="header-container"></div>
+
+  <main>
+    <section class="quienes-somos">
+      <h2>¿Quiénes somos?</h2>
+      <p>Somos un equipo conformado por Sierra López Julio César, Cruz Córdova María Fernanda y Valdes Clemente Alejandra, apasionados por el desarrollo tecnológico y el diseño creativo. En conjunto, estamos trabajando en una aplicación de ventas enfocada en artesanías, como parte de nuestros proyectos académicos en las materias de Taller de Desarrollo 3 y Calidad en los Procesos de Desarrollo de Software.</p>
+
+      <h2>Nuestra Historia</h2>
+      <p>Nuestra historia está marcada por el compromiso y dedicación como estudiantes de la Universidad Autónoma de Chiapas (UNACH), en la carrera de Licenciatura en Ingeniería en Desarrollo y Tecnologías de Software, perteneciente a la Facultad de Contaduría y Administración. Inspirados por nuestras raíces y el potencial de la artesanía chiapaneca, decidimos canalizar nuestra creatividad y conocimientos hacia la creación de una plataforma que conecte a los artesanos con un mercado digital más amplio.</p>
+
+      <p>Con este proyecto, no solo buscamos cumplir con los objetivos académicos, sino también aportar un granito de arena al fortalecimiento de las tradiciones y habilidades de los artesanos locales.</p>
+
+      <h2>Compromiso con nuestros aliados</h2>
+      <p>Nuestro mayor compromiso es ofrecer una plataforma funcional, atractiva y exitosa. Queremos que esta página sea una herramienta que facilite la venta y promoción de artesanías, reflejando la riqueza cultural y el talento de los artesanos chiapanecos. Nos esforzamos por garantizar que la experiencia de usuario sea intuitiva y moderna, alineando diseño y funcionalidad para satisfacer tanto a vendedores como a compradores.</p>
+    </section>
+  </main>
+
+  <!-- Footer dinámico -->
+  <div id="footer-container"></div>
+
+  <script type="module">
+    import { cargarHeader, cargarFooter } from '/js/components/cargarHeader.js';
+  
+    await cargarHeader(); // esto maneja sesión, cookies, contador, etc.
+    await cargarFooter();
+  
+    // Luego carga cualquier script adicional
+    import('/js/pages/busqueda.js');
+  </script>
+</body>
+</html>

@@ -11,19 +11,19 @@ const bcrypt = require('bcryptjs');
 app.use(cors({
   origin: 'http://localhost:3000',
   credentials: true,
-  exposedHeaders: ['set-cookie'] // 👈 Permite ver cookies en frontend
+  exposedHeaders: ['set-cookie']
 }));
 
 // Sesiones
 app.use(session({
   secret: process.env.SESSION_SECRET || 'fallback-secret',
-  name: 'node.sid', // Nombre personalizado para evitar conflictos
+  name: 'node.sid',
   resave: false,
   saveUninitialized: false,
   cookie: {
-    secure: false, // true en producción (HTTPS)
+    secure: false,
     httpOnly: true,
-    domain: 'localhost', // 👈 ¡Crítico! Fuerza el dominio correcto
+    domain: 'localhost',
     sameSite: 'lax',
     maxAge: 24 * 60 * 60 * 1000 // 1 día
   }
@@ -39,9 +39,21 @@ app.use((req, res, next) => {
   next();
 });
 
+const carritoRoutes = require('./routes/carrito.routes');
+const pedidoRoutes = require('./routes/pedido.routes');
+app.use('/api', carritoRoutes);
+app.use('/api', pedidoRoutes);
 app.use(express.static(path.join(__dirname, 'public')));
 app.use('/partials', express.static(path.join(__dirname, 'public/partials')));
 
+// --- Middleware de verificación de sesión
+function verificarSesion(req, res, next) {
+  if (req.session && req.session.usuario) {
+    return next(); // Si hay sesión, continúa
+  } else {
+    return res.status(401).json({ mensaje: 'No autorizado' }); // Si no hay sesión, bloquea acceso
+  }
+}
 // --- RUTAS API PARA FRONTEND --
 app.get('/api/usuario', (req, res) => {
   console.log('✅ Ruta /api/usuario alcanzada'); // 👈 Nuevo log
@@ -63,7 +75,7 @@ app.get('/sesion.html', (req, res) => {
 });
 
 // Registro (/api/registro)
-const { enviarCorreo } = require('./public/src/utils/mailer.js');
+const { enviarCorreo } = require('./utils/mailer.js');
 
 app.post('/api/registro', async (req, res) => {
   const { nombre_usuario, correo, contrasena } = req.body;
@@ -112,7 +124,7 @@ app.post('/api/login', async (req, res) => {
   try {
     const [usuarios] = await pool.query(
       'SELECT * FROM usuarios WHERE correo = ?', [correo]);
-
+      
     const usuario = usuarios[0];
     if (!usuario) return res.status(401).json({ error: 'Usuario no encontrado' });
 
@@ -127,6 +139,13 @@ app.post('/api/login', async (req, res) => {
     };
     console.log('Sesión después de login:', req.session);
 
+    // Asociar el carrito existente con el usuario que acaba de iniciar sesión
+    await pool.query(`
+    UPDATE carritos
+    SET usuario_id = ?
+    WHERE sesion_id = ? AND usuario_id IS NULL
+  `, [usuario.id, req.sessionID]);
+
     res.json({ success: true, usuario: req.session.usuario });
   } catch (err) {
     res.status(500).json({ error: 'Error al iniciar sesión', message: err.message });
@@ -135,24 +154,24 @@ app.post('/api/login', async (req, res) => {
 
 // Direcciones por usuario (/api/direcciones)
 app.post('/api/direcciones', async (req, res) => {
-  const { usuario_id, direccion, ciudad, estado, codigo_postal } = req.body;
-
-  if (!usuario_id || !direccion) {
-    return res.status(400).json({ error: 'Faltan datos' });
+  const usuario = req.session.usuario;
+  if (!usuario) {
+    return res.status(401).json({ error: 'No autenticado' });
   }
 
+  const { direccion, ciudad, estado, codigo_postal } = req.body;
+  console.log("Body recibido:", req.body);
   try {
-    await pool.query(`
-      INSERT INTO direcciones (usuario_id, direccion, ciudad, estado, codigo_postal)
-      VALUES (?, ?, ?, ?, ?)`,
-      [usuario_id, direccion, ciudad, estado, codigo_postal]);
-
+    await pool.query(
+      'INSERT INTO direcciones (usuario_id, direccion, ciudad, estado, codigo_postal) VALUES (?, ?, ?, ?, ?)',
+      [usuario.id, direccion, ciudad, estado, codigo_postal]
+    );
     res.json({ success: true });
-  } catch (err) {
-    res.status(500).json({ error: 'Error al guardar dirección', message: err.message });
+  } catch (error) {
+    console.error("Error al guardar dirección:", error);
+    res.status(500).json({ success: false });
   }
 });
-
 
 app.get('/api/direcciones/:usuario_id', async (req, res) => {
   try {
@@ -160,6 +179,24 @@ app.get('/api/direcciones/:usuario_id', async (req, res) => {
     res.json(direcciones);
   } catch (err) {
     res.status(500).json({ error: 'Error al obtener direcciones' });
+  }
+});
+
+app.delete('/api/direcciones/:id', async (req, res) => {
+  const usuario = req.session.usuario;
+  if (!usuario) {
+    return res.status(401).json({ error: 'No autenticado' });
+  }
+
+  try {
+    const [result] = await pool.query(
+      'DELETE FROM direcciones WHERE id = ? AND usuario_id = ?',
+      [req.params.id, usuario.id]
+    );
+    res.json({ success: result.affectedRows > 0 });
+  } catch (error) {
+    console.error("Error al eliminar dirección:", error);
+    res.status(500).json({ success: false });
   }
 });
 
@@ -315,63 +352,6 @@ app.get('/api/productos/:id', async (req, res) => {
   } catch (err) {
     console.error('Error en /api/productos/:id:', err); // 👈 LOG IMPORTANTE
     res.status(500).json({ error: err.message });
-  }
-});
-
-// Endpoint para productos destacados
-app.get('/api/productos/destacados', async (req, res) => {
-  try {
-    const [rows] = await pool.query(`
-      SELECT * FROM productos WHERE destacado = 1 LIMIT 6
-    `);
-    res.json(rows);
-  } catch (error) {
-    console.error('Error al obtener productos destacados:', error);
-    res.status(500).json({ mensaje: 'Error del servidor' });
-  }
-});
-
-
-
-// Manejo del carrito - Versión mejorada
-app.post('/api/carrito', async (req, res) => {
-  const { sesion_id, variedad_id, cantidad } = req.body;
-  
-  if (!sesion_id || !variedad_id || !cantidad) {
-    return res.status(400).json({ error: 'Datos incompletos' });
-  }
-
-  let connection;
-  try {
-    connection = await pool.getConnection();
-    
-    // 1. Buscar o crear carrito en una sola consulta
-    const [carrito] = await connection.query(
-      `INSERT INTO carritos (sesion_id) 
-       VALUES (?) 
-       ON DUPLICATE KEY UPDATE id=LAST_INSERT_ID(id)`,
-      [sesion_id]
-    );
-
-    const carritoId = carrito.insertId;
-
-    // 2. Añadir item al carrito
-    await connection.query(
-      `INSERT INTO carrito_items 
-       (carrito_id, variedad_id, cantidad) 
-       VALUES (?, ?, ?)`,
-      [carritoId, variedad_id, cantidad]
-    );
-
-    res.json({ success: true, carritoId });
-  } catch (err) {
-    console.error('Error en /api/carrito:', err);
-    res.status(500).json({ 
-      error: err.message,
-      sqlMessage: err.sqlMessage 
-    });
-  } finally {
-    if (connection) connection.release();
   }
 });
 

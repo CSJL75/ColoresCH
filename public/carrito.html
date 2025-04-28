@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Tu Carrito - Colores de Chiapas</title>
+  <link rel="stylesheet" href="/css/style.css" />
+  <link rel="stylesheet" href="/css/carrito.css" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+  <div id="header-container"></div>
+
+  <main class="carrito-container">
+    <h2 class="titulo-carrito">🛒 Tu carrito de compras</h2>
+
+    <div class="carrito-contenido">
+      <!-- Columna Izquierda: Productos -->
+      <div class="columna-productos" id="carrito-items">
+        <!-- Aquí se inyectan los productos con JS -->
+      </div>
+
+      <!-- Columna Derecha: Resumen -->
+      <div class="columna-resumen">
+        <div class="resumen-card">
+          <h3>🧾 Pedido</h3>
+          
+          <p class="resumen-total"><strong id="total-precio">$0.00</strong></p>
+
+          <label>Dirección de envío:</label>
+          <div id="direcciones-container" class="direcciones-container">
+            <p>Cargando direcciones...</p>
+          </div>
+          
+          <button id="btn-comprar" disabled>Finalizar compra</button>
+        </div>
+      </div>
+    </div>
+  </main>
+
+  <div id="footer-container"></div>
+
+  <script type="module" src="/js/pages/carrito.js"></script>
+  <script type="module">
+    import { cargarHeader, cargarFooter } from '/js/components/cargarHeader.js';
+    await cargarHeader();
+    await cargarFooter();
+  </script>
+</body>
+</html>

@@ -3,6 +3,7 @@ export async function cargarHeader() {
   const headerHTML = await headerRes.text();
   document.getElementById('header-container').innerHTML = headerHTML;
   console.log("Iniciando carga de header"); // 👈 1
+  await actualizarContadorCarrito();
   try {
     console.log("Consultando /api/usuario"); // 👈 2
     const usuarioRes = await fetch('http://localhost:3000/api/usuario', { // 👈 URL absoluta
@@ -30,6 +31,7 @@ export async function cargarHeader() {
           <span class="usuario-nombre">${nombreUsuario}</span>
           <div class="menu-usuario oculto">
             <a href="/direcciones.html">Direcciones</a>
+            <a href="/pedidos.html">Pedidos</a>
             <a href="#" id="cerrar-sesion">Cerrar sesión</a>
           </div>
         </div>
@@ -65,6 +67,29 @@ console.error("Error completo:", error); // 👈 5
   }
 }
 
+export async function actualizarContadorCarrito() {
+  try {
+    const res = await fetch('/api/carrito/contador', { credentials: 'include' });
+
+    if (res.status === 401) {
+      console.log('Usuario no logueado. No se actualiza el contador del carrito.');
+      return;
+    }
+
+    const data = await res.json();
+    const contador = data.total || 0;
+    const spanContador = document.querySelector('#carrito-contador');
+
+    if (spanContador) {
+      spanContador.textContent = contador;
+      spanContador.style.display = contador > 0 ? 'inline-block' : 'none';
+    }
+  } catch (error) {
+    console.error('actualizarContadorCarrito Error:', error);
+  }
+}
+
+
 // Resto del código (cargarFooter, cerrarSesion)
 
 export async function cargarFooter() {
@@ -76,7 +101,7 @@ export async function cargarFooter() {
 export async function cerrarSesion() {
   const res = await fetch('/api/logout', {
     method: 'POST',
-    credentials: 'same-origin'
+    credentials: 'include'
   });
 
   if (res.ok) {

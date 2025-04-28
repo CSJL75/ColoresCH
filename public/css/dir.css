@@ -1,0 +1,124 @@
+body {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+  margin: 0;
+}
+
+/* Layout principal */
+.contenedor-direcciones {
+  width: 95%;
+  max-width: 1200px;
+  margin: 20px auto;
+  padding: 20px;
+  color: white;
+  flex: 1;
+}
+
+.titulo-direcciones {
+  color: white;
+  text-align: center;
+  margin-bottom: 30px;
+}
+
+/* Diseño de dos columnas */
+.layout-doble-columna {
+  display: flex;
+  gap: 30px;
+}
+
+#form-section {
+  flex: 1;
+  background-color: #F8F4E3;
+  padding: 1.5rem;
+  border-radius: 12px;
+  box-shadow: 0 0 8px rgba(0,0,0,0.1);
+  color: #333;
+  max-width: 500px;
+  position: sticky;
+  top: 20px;
+  align-self: flex-start;
+}
+
+.seccion-direcciones {
+  flex: 2;
+}
+
+/* Lista de direcciones */
+#lista-direcciones {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+  gap: 20px;
+}
+
+.direccion-card {
+  background-color: #F8F4E3;
+  border-radius: 8px;
+  padding: 15px;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+  color: #333;
+  height: fit-content;
+}
+
+/* Botones */
+#form-section h2 {
+  margin-bottom: 1rem;
+  color: #333;
+}
+
+#form-section form {
+  display: flex;
+  flex-direction: column;
+  gap: 0.8rem;
+}
+
+#form-section button[type="submit"] {
+  background-color: #A4243C;
+  color: white;
+  padding: 12px 20px;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  margin-top: 10px;
+  font-weight: bold;
+}
+
+.eliminar-btn {
+  background-color: #ff4444;
+  color: white;
+  border: none;
+  padding: 6px 12px;
+  border-radius: 4px;
+  cursor: pointer;
+  margin-top: 10px;
+  font-size: 0.9rem;
+}
+
+.eliminar-btn:hover {
+  background-color: #cc0000;
+}
+
+/* Inputs del formulario */
+#form-section form input {
+  width: 100%;
+  padding: 10px;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  font-size: 1rem;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .layout-doble-columna {
+    flex-direction: column;
+  }
+  
+  #form-section {
+    max-width: 100%;
+    position: static;
+  }
+  
+  #lista-direcciones {
+    grid-template-columns: 1fr;
+  }
+}

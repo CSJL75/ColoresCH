@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Mis Pedidos - Colores de Chiapas</title>
+  <link rel="stylesheet" href="/css/style.css" />
+  <link rel="stylesheet" href="/css/pedidos.css" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+  <div id="header-container"></div>
+
+  <main class="pedidos-container">
+    <h2 class="titulo-pedidos">📦 Mis Pedidos</h2>
+  
+    <div id="sin-pedidos" class="mensaje-sin-pedidos" style="display: none;">
+      <p>😕 Aún no tienes pedidos realizados.</p>
+      <a href="/" class="btn-volver">Explorar productos</a>
+    </div>
+  
+    <div id="contenedor-pedidos" class="contenedor-pedidos">
+      <!-- Aquí se inyectarán las tarjetas de pedidos -->
+    </div>
+  </main>
+
+  <!-- 🔥 Mover fuera del <main> -->
+  <div id="contenedor-detalles-pedido" class="contenedor-detalles-pedido" style="display: none;">
+    <!-- Aquí se inyectarán los detalles de un pedido -->
+  </div>
+
+  <div id="footer-container"></div>
+
+  <script type="module" src="/js/pages/pedidos.js"></script>
+  <script type="module">
+    import { cargarHeader, cargarFooter } from '/js/components/cargarHeader.js';
+    await cargarHeader();
+    await cargarFooter();
+  </script>
+</body>
+</html>

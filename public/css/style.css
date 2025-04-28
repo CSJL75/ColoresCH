@@ -18,9 +18,8 @@
     box-sizing: border-box;
   }
   
-/* Fondo general (puedes comentar esta línea si aún no tienes imagen) */
-/*body {
-  background-image: url('/img/fondo-textil.jpg');
+body {
+  background-image: url('/assets/img/fondo.png');
   background-size: cover;
   background-attachment: fixed;
   background-repeat: no-repeat;
@@ -41,17 +40,28 @@
   
   /* Logo */
   .logo-container {
-    width: 180px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
   }
+  
   .logo {
-    height: 100px;
-    width: auto;
-    transition: transform 0.3s;
+    height: 80px;
   }
   .logo:hover {
     transform: scale(1.05);
   }
+  .nombre-sitio a {
+    color: inherit; /* igual que los enlaces */
+    text-decoration: none;
+    font-size: 1.2rem;
+    font-weight: 500;
+    transition: color 0.3s ease;
+  }
   
+  .nombre-sitio a:hover {
+    color: white;
+  }
   /* Navegación */
   .nav ul {
     display: flex;
@@ -181,6 +191,17 @@
   }
   
   /* Contador carrito */
+  .icono-carrito {
+    list-style: none;
+    position: relative;
+    margin-left: 15px;
+  }
+  
+  .enlace-carrito {
+    display: flex;
+    align-items: center;
+    text-decoration: none;
+  }
   .contador-carrito {
     position: absolute;
     top: -5px;
@@ -197,6 +218,10 @@
     font-weight: bold;
     box-shadow: 0 1px 3px rgba(0,0,0,0.2);
   }
+  /* Mostrar solo cuando hay items */
+.contador-carrito:empty {
+  display: none;
+}
   .busqueda-container {
     position: relative;
     display: flex;

@@ -6,18 +6,19 @@
   <title>Detalle del Producto</title>
   <link rel="stylesheet" href="/css/style.css" />
   <link rel="stylesheet" href="/css/producto.css" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 </head>
 <body>
 
   <!-- Header -->
-  <div id="header-placeholder"></div>
+  <div id="header-container"></div>
 
   <!-- Página de producto -->
   <main class="producto-page">
     
     <!-- Imagen grande del producto -->
     <section class="producto-imagen">
-      <img src="/img/ejemplo-producto.jpg" alt="Imagen del producto artesanal" />
+      <img src="" alt="Imagen del producto artesanal" id="producto-imagen" />
     </section>
 
     <!-- Detalles del producto -->
@@ -34,16 +35,18 @@
         <!-- Aquí se insertan los colores dinámicamente -->
       </div>
       
-<!-- Selector de cantidad -->
-<div class="selector">
-  <label for="cantidad">Cantidad:</label>
-  <input type="number" min="1" value="1" id="cantidad" />
-  <span class="precio">$00.00</span> <!-- Aquí actualizamos el precio -->
-</div>
-
-
-      <!-- Botón de compra -->
-      <button class="btn-comprar">Agregar al carrito</button>
+  <!-- Contenedor unificado de selector y botón -->
+  <div class="acciones-producto">
+    <!-- Selector de cantidad -->
+    <div class="selector">
+      <label for="cantidad">Cantidad:</label>
+      <input type="number" min="1" value="1" id="cantidad" />
+      <span class="precio">$00.00</span>
+    </div>
+    
+    <!-- Botón de compra (manteniendo la clase original) -->
+    <button class="btn-comprar">Agregar al carrito</button>
+  </div>
     </section>
   </main>
 
@@ -65,7 +68,7 @@
 
   <!-- Comentarios simulados -->
   <section class="comentarios">
-    <h2>Comentarios</h2>
+    <h1>Comentarios</h1>
     
     <div class="comentario">
       <div class="estrellas">★★★★★</div>
@@ -87,27 +90,14 @@
   </section>
 
   <!-- Footer -->
-  <div id="footer-placeholder"></div>
-
-  <!-- Scripts -->
+  <div id="footer-container"></div>
+  
+  <script type="module" src="/js/pages/producto.js"></script>
   <script type="module">
-    fetch('/partials/header.html')
-      .then(res => res.text())
-      .then(data => {
-        document.getElementById('header-placeholder').innerHTML = data;
+    import { cargarHeader, cargarFooter } from '/js/components/cargarHeader.js';
   
-        // Cargar script de búsqueda después de insertar el header
-        const script = document.createElement('script');
-        script.src = '/js/pages/busqueda.js';
-        document.body.appendChild(script);
-      });
-  
-    fetch('/partials/footer.html')
-      .then(res => res.text())
-      .then(data => {
-        document.getElementById('footer-placeholder').innerHTML = data;
-      });
-  </script>
-  <script src="/js/pages/producto.js"></script>
+    cargarHeader();
+    cargarFooter();
+  </script>  
 </body>
 </html>

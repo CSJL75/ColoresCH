@@ -30,15 +30,17 @@
   <div id="footer-container"></div>
 
   <!-- Cargar header y footer -->
-  <script>
-    Promise.all([
-      fetch('/partials/header.html').then(r => r.text()),
-      fetch('/partials/footer.html').then(r => r.text())
-    ]).then(([header, footer]) => {
-      document.getElementById('header-container').innerHTML = header;
-      document.getElementById('footer-container').innerHTML = footer;
-    });
+  <script type="module">
+    import { cargarHeader, cargarFooter } from '/js/components/cargarHeader.js';
+    cargarHeader();
+    cargarFooter();
+  
+    // Si usas búsqueda, también puedes añadir esto
+    const scriptBusqueda = document.createElement('script');
+    scriptBusqueda.src = '/js/pages/busqueda.js';
+    document.body.appendChild(scriptBusqueda);
   </script>
+  
   <script type="module" src="/src/registro.js"></script>
 </body>
 </html>

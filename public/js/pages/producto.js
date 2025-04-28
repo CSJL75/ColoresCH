@@ -1,16 +1,21 @@
-document.body.classList.add('cargando');
-let producto;
-let esDesdeMayoreo = false;
-
+import { actualizarContadorCarrito } from '/js/components/cargarHeader.js';
 document.addEventListener('DOMContentLoaded', async () => {
+  let producto;
+  let esDesdeMayoreo = false;
+  async function obtenerUsuario() {
+    const res = await fetch('/api/usuario', {
+      credentials: 'include'
+    });
+  
+    if (res.ok) return res.json();
+    return null;
+  }  
   const params = new URLSearchParams(window.location.search);
   const id = params.get('id');
-  if (params.has('origen')) {
-    esDesdeMayoreo = params.get('origen') === 'mayoreo';
-  } else {
-    esDesdeMayoreo = sessionStorage.getItem('origen') === 'mayoreo';
-  }
+  esDesdeMayoreo = params.get('origen') === 'mayoreo' || sessionStorage.getItem('origen') === 'mayoreo';
+
   console.log("¿Es desde mayoreo?", esDesdeMayoreo);
+
   if (!id) {
     alert('Producto no especificado');
     return;
@@ -18,122 +23,155 @@ document.addEventListener('DOMContentLoaded', async () => {
 
   try {
     const res = await fetch(`/api/productos/${id}`);
+    if (!res.ok) throw new Error('Producto no encontrado');
     producto = await res.json();
+    console.log(producto);
 
-    // Rellenar contenido
+    // Asignar valores básicos
     document.querySelector('h1').textContent = producto.nombre;
     document.querySelector('.producto-etiqueta').textContent = producto.categoria;
+    document.querySelector('.seccion-extra:nth-of-type(1) p').textContent = producto.descripcion;
+    document.querySelector('.seccion-extra:nth-of-type(2) p').textContent = `${producto.artesano}: ${producto.artesano_biografia}`;
 
-    const imagen = document.querySelector('.producto-imagen img');
-    if (producto.variedades.length > 0 && producto.variedades[0].imagen_url) {
-      imagen.src = producto.variedades[0].imagen_url;
-    } else {
-      imagen.src = 'https://via.placeholder.com/400x400?text=Sin+imagen'; // imagen de respaldo
-    }
-    imagen.alt = `Imagen de ${producto.nombre}`;
+    // Mostrar precios en la sección de precio fijo
+    document.querySelector('.precio-original').textContent = `$${producto.precio.toFixed(2)} MXN`;
+    document.querySelector('.precio-mayoreo').textContent = `$${producto.precio_mayoreo.toFixed(2)} MXN`;
 
+    // Manejo de cantidades
+    const inputCantidad = document.getElementById('cantidad');
+    inputCantidad.min = esDesdeMayoreo ? producto.umbral_mayoreo : 1;
+    inputCantidad.value = inputCantidad.min;
+
+    // Cargar variedades
+    const imagen = document.getElementById('producto-imagen');
     const contenedorColores = document.querySelector('.selector-colores');
-    producto.variedades.forEach(variedad => {
+    contenedorColores.innerHTML = '';
+
+    producto.variedades.forEach((variedad, index) => {
       const circulo = document.createElement('div');
       circulo.classList.add('color-circulo');
       circulo.style.backgroundColor = variedad.codigo_hex;
       circulo.dataset.variedadId = variedad.id;
       circulo.title = variedad.color;
-
-      // Guardamos la imagen_url también en el elemento
       circulo.dataset.imagenUrl = variedad.imagen_url;
+      if (index === 0) circulo.classList.add('selected');
       contenedorColores.appendChild(circulo);
+
+      if (index === 0) {
+        imagen.src = variedad.imagen_url;
+        imagen.alt = `Imagen de ${producto.nombre} - ${variedad.color}`;
+      }
     });
 
+    // Escuchar clicks en selección de variedad
     contenedorColores.addEventListener('click', (e) => {
       if (e.target.classList.contains('color-circulo')) {
-        // Remover selección anterior
         document.querySelectorAll('.color-circulo').forEach(c => c.classList.remove('selected'));
         e.target.classList.add('selected');
-
-        // Cambiar imagen principal
-        const nuevaImagen = e.target.dataset.imagenUrl;
-        const imagenPrincipal = document.querySelector('.producto-imagen img');
-        imagenPrincipal.src = nuevaImagen;
-        imagenPrincipal.alt = `Imagen de ${producto.nombre} - ${e.target.title}`;
-
-        // No necesitamos el precio de la variedad, solo usamos el precio base del producto
-        // Guardar el precio base del producto
-        precioVariedadSeleccionada = parseFloat(producto.precio);
-
-        // Actualizar precio con la variedad seleccionada
+        imagen.src = e.target.dataset.imagenUrl;
         actualizarPrecio();
       }
     });
 
-    const inputCantidad = document.getElementById('cantidad');
-    const precioSpan = document.querySelector('.precio');
-    const precioOriginalEls = document.querySelectorAll('.precio-original');
-    const precioMayoreoEls = document.querySelectorAll('.precio-mayoreo');
+    // Leyenda de mayoreo
+    const precioContenedor = document.querySelector('.selector .precio');
+    const leyendaMayoreo = document.createElement('div');
+    leyendaMayoreo.className = 'leyenda-mayoreo';
+    leyendaMayoreo.style.fontSize = '0.9em';
+    leyendaMayoreo.style.color = '#555';
+    leyendaMayoreo.style.marginTop = '0.3em';
+    precioContenedor.parentElement.appendChild(leyendaMayoreo);
 
     function actualizarPrecio() {
       const cantidad = parseInt(inputCantidad.value);
-      if (isNaN(cantidad) || cantidad <= 0) return;
+      const aplicaMayoreo = esDesdeMayoreo || cantidad >= producto.umbral_mayoreo;
 
-      const precioNormal = parseFloat(producto.precio);
-      const precioMayoreo = parseFloat(producto.precio_mayoreo);
+      const precioUnitario = aplicaMayoreo ? producto.precio_mayoreo : producto.precio;
+      const total = precioUnitario * cantidad;
+      precioContenedor.textContent = `$${total.toFixed(2)} MXN`;
 
-      // Si viene desde mayoreo.html, mostrar el precio con descuento
-      const usaMayoreo = cantidad >= producto.umbral_mayoreo;
-      // Si viene desde mayoreo, preseleccionamos cantidad mínima
-      if (esDesdeMayoreo && inputCantidad.value < producto.umbral_mayoreo) {
-       inputCantidad.value = producto.umbral_mayoreo;
-      }
-      const precioUnitario = usaMayoreo ? precioMayoreo : precioNormal;
+      // Mostrar u ocultar leyenda y precio tachado
+      const precioOriginal = document.querySelector('.precio-original');
+      const precioMayoreo = document.querySelector('.precio-mayoreo');
 
-      // Actualiza el total
-      precioSpan.textContent = `$${(precioUnitario * cantidad).toFixed(2)}`;
-
-      // Actualiza precios individuales
-      precioOriginalEls.forEach(el => {
-        el.textContent = `$${precioNormal.toFixed(2)} MXN`;
-        el.classList.toggle('tachado', esDesdeMayoreo && cantidad >= producto.umbral_mayoreo);
-        console.log(`precioOriginal ${el.textContent}, tachado: ${el.classList.contains('tachado')}`);
-      });
-      
-      precioMayoreoEls.forEach(el => {
-        el.textContent = `$${precioMayoreo.toFixed(2)} MXN`;
-        el.style.display = (esDesdeMayoreo && usaMayoreo) ? 'inline' : 'none';
-        console.log(`precioMayoreo ${el.textContent}, visible: ${el.style.display}`);
-      });
-      
-      
-
-      // Si es desde mayoreo, indicar la cantidad mínima
-      if (usaMayoreo) {
-        precioMayoreoEls.forEach(el => {
-          el.innerHTML += `<br><small>a partir de ${producto.umbral_mayoreo} unidades</small>`;
-        });
-      }
-
-      // Si viene de mayoreo, ajustar la cantidad mínima
-      if (esDesdeMayoreo && inputCantidad.value < producto.umbral_mayoreo) {
-        inputCantidad.value = producto.umbral_mayoreo;
+      if (aplicaMayoreo) {
+        precioOriginal.style.textDecoration = 'line-through';
+        precioMayoreo.style.display = 'inline';
+        leyendaMayoreo.textContent = `Precio especial a partir de ${producto.umbral_mayoreo} unidades`;
+        leyendaMayoreo.style.display = 'block';
+      } else {
+        precioOriginal.style.textDecoration = 'none';
+        precioMayoreo.style.display = 'none';
+        leyendaMayoreo.style.display = 'none';
       }
     }
 
-    console.log('Producto cargado:', producto);
-    console.log('Precio:', producto.precio);
-    console.log('Precio Mayoreo:', producto.precio_mayoreo);
+    inputCantidad.addEventListener('input', () => {
+      if (esDesdeMayoreo && parseInt(inputCantidad.value) < producto.umbral_mayoreo) {
+        inputCantidad.value = producto.umbral_mayoreo;
+      }
+      actualizarPrecio();
+    });
 
-    // Escuchamos cambios en cantidad
-    inputCantidad.addEventListener('input', actualizarPrecio);
-
-    // Llamamos a actualizarPrecio aquí para calcular los precios al principio
     actualizarPrecio();
 
-    // Descripción y artesano
-    document.querySelectorAll('.seccion-extra')[0].querySelector('p').textContent = producto.descripcion;
-    document.querySelectorAll('.seccion-extra')[1].querySelector('p').textContent = `${producto.artesano}: ${producto.artesano_biografia}`;
+    // Agregar al carrito
+    const btnAgregar = document.querySelector('.btn-comprar');
+    btnAgregar.addEventListener('click', async () => {
+      const cantidad = parseInt(inputCantidad.value);
+      const variedadSeleccionada = document.querySelector('.color-circulo.selected');
+    
+      if (!variedadSeleccionada) {
+        alert('Por favor selecciona un color');
+        return;
+      }
+    
+      if (!cantidad || cantidad < 1) {
+        alert('Cantidad inválida');
+        return;
+      }
+    
+      const usuario = await obtenerUsuario();
+      if (!usuario) {
+        alert('Debes iniciar sesión para agregar productos al carrito.');
+        return;
+      }
+      
+      const datos = {
+        variedad_id: variedadSeleccionada?.dataset?.variedadId,
+        producto_id: producto?.id,
+        cantidad
+      };
+      
+      console.log("Datos enviados al carrito:", datos);
+      
+      try {
+        const res = await fetch('/api/carrito', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          credentials: 'include',
+          body: JSON.stringify(datos)
+        });
+      
+        const data = await res.json();
+        if (res.ok) {
+          alert('Producto agregado al carrito');
+          actualizarContadorCarrito();
+        } else {
+          alert(data.error || 'Error al agregar al carrito');
+        }
+      } catch (err) {
+        console.error('Error:', err);
+        alert('No se pudo conectar con el servidor');
+      }
+      
+    });
+    
 
   } catch (err) {
     console.error('Error al cargar producto:', err);
     alert('No se pudo cargar el producto');
   }
+
   document.body.classList.remove('cargando');
 });
