@@ -10,8 +10,14 @@ document.addEventListener("DOMContentLoaded", async () => {
   });
 
   if (!resUsuario.ok) {
-    alert("Debes iniciar sesión para ver tus direcciones.");
-    window.location.href = "sesion.html";
+    Swal.fire({
+      icon: 'warning',
+      title: 'Acceso restringido',
+      text: 'Debes iniciar sesión para ver tus direcciones.',
+      confirmButtonColor: '#3085d6'
+    }).then(() => {
+      window.location.href = "sesion.html";
+    });
     return;
   }
 
@@ -51,23 +57,55 @@ document.addEventListener("DOMContentLoaded", async () => {
       document.querySelectorAll(".eliminar-btn").forEach(btn => {
         btn.addEventListener("click", async () => {
           const id = btn.getAttribute("data-id");
-          if (confirm("¿Estás seguro de que quieres eliminar esta dirección?")) {
-            try {
-              const res = await fetch(`/api/direcciones/${id}`, {
-                method: "DELETE",
-                credentials: 'include'
-              });
-
-              const data = await res.json();
-              if (data.success) {
-                cargarDirecciones(); // Recargar la lista después de eliminar
-              } else {
-                alert("No se pudo eliminar la dirección.");
+      
+          Swal.fire({
+            title: '¿Eliminar dirección?',
+            text: 'Esta acción no se puede deshacer.',
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonColor: '#d33',
+            cancelButtonColor: '#aaa',
+            confirmButtonText: 'Sí, eliminar',
+            cancelButtonText: 'Cancelar'
+          }).then(async (result) => {
+            if (result.isConfirmed) {
+              try {
+                const res = await fetch(`/api/direcciones/${id}`, {
+                  method: "DELETE",
+                  credentials: 'include'
+                });
+      
+                const data = await res.json();
+      
+                if (data.success) {
+                  Swal.fire({
+                    toast: true,
+                    position: 'top',
+                    icon: 'success',
+                    title: 'Dirección eliminada',
+                    showConfirmButton: false,
+                    timer: 1500
+                  });
+                  cargarDirecciones(); // Recargar la lista después de eliminar
+                } else {
+                  Swal.fire({
+                    icon: 'error',
+                    title: 'No se pudo eliminar la dirección',
+                    text: 'La dirección está vinculada a pedidos en proceso y no puede eliminarse.',
+                    confirmButtonColor: '#d33'
+                  });
+                }
+              } catch (err) {
+                console.error("Error al eliminar dirección:", err);
+                Swal.fire({
+                  icon: 'error',
+                  title: 'Error de red',
+                  text: 'No se pudo conectar al servidor.',
+                  confirmButtonColor: '#d33'
+                });
               }
-            } catch (err) {
-              console.error("Error al eliminar dirección:", err);
             }
-          }
+          });
         });
       });
 
@@ -88,7 +126,12 @@ document.addEventListener("DOMContentLoaded", async () => {
     };
 
     if (Object.values(nuevaDireccion).some(val => val.trim() === "")) {
-      alert("Por favor, completa todos los campos.");
+      Swal.fire({
+        icon: 'warning',
+        title: 'Campos incompletos',
+        text: 'Por favor, completa todos los campos.',
+        confirmButtonColor: '#f39c12'
+      });
       return;
     }
 
@@ -103,10 +146,23 @@ document.addEventListener("DOMContentLoaded", async () => {
 
       const data = await res.json();
       if (data.success) {
+        Swal.fire({
+          toast: true,
+          position: 'top',
+          icon: 'success',
+          title: 'Dirección guardada',
+          showConfirmButton: false,
+          timer: 1500
+        });
         form.reset();
         cargarDirecciones();
       } else {
-        alert("Error al guardar la dirección.");
+        Swal.fire({
+          icon: 'error',
+          title: 'No se pudo guardar',
+          text: 'Hubo un problema al guardar la dirección. Intenta de nuevo.',
+          confirmButtonColor: '#d33'
+        });
       }
     } catch (err) {
       console.error("Error al enviar dirección:", err);

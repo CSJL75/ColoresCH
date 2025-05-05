@@ -17,7 +17,11 @@ document.addEventListener('DOMContentLoaded', async () => {
   console.log("¿Es desde mayoreo?", esDesdeMayoreo);
 
   if (!id) {
-    alert('Producto no especificado');
+    Swal.fire({
+      icon: 'error',
+      title: 'Producto no especificado',
+      confirmButtonColor: '#d33'
+    });
     return;
   }
 
@@ -122,18 +126,33 @@ document.addEventListener('DOMContentLoaded', async () => {
       const variedadSeleccionada = document.querySelector('.color-circulo.selected');
     
       if (!variedadSeleccionada) {
-        alert('Por favor selecciona un color');
+        Swal.fire({
+          icon: 'warning',
+          title: 'Selecciona una variedad',
+          text: 'Por favor selecciona un color antes de continuar.',
+          confirmButtonColor: '#f39c12'
+        });
         return;
       }
     
       if (!cantidad || cantidad < 1) {
-        alert('Cantidad inválida');
+        Swal.fire({
+          icon: 'warning',
+          title: 'Cantidad inválida',
+          text: 'Introduce una cantidad válida.',
+          confirmButtonColor: '#f39c12'
+        });
         return;
       }
     
       const usuario = await obtenerUsuario();
       if (!usuario) {
-        alert('Debes iniciar sesión para agregar productos al carrito.');
+        Swal.fire({
+          icon: 'info',
+          title: 'Inicia sesión',
+          text: 'Debes iniciar sesión para agregar productos al carrito.',
+          confirmButtonColor: '#3085d6'
+        });
         return;
       }
       
@@ -155,22 +174,41 @@ document.addEventListener('DOMContentLoaded', async () => {
       
         const data = await res.json();
         if (res.ok) {
-          alert('Producto agregado al carrito');
+          Swal.fire({
+            icon: 'success',
+            title: 'Producto agregado al carrito',
+            showConfirmButton: false,
+            timer: 1500
+          });
           actualizarContadorCarrito();
         } else {
-          alert(data.error || 'Error al agregar al carrito');
+          Swal.fire({
+            icon: 'error',
+            title: 'No se pudo agregar el producto',
+            text: data.error || 'Ocurrió un error inesperado.',
+            confirmButtonColor: '#d33'
+          });
         }
       } catch (err) {
         console.error('Error:', err);
-        alert('No se pudo conectar con el servidor');
-      }
-      
+        Swal.fire({
+          icon: 'error',
+          title: 'Error de red',
+          text: 'No se pudo conectar con el servidor. Intenta más tarde.',
+          confirmButtonColor: '#d33'
+        }); 
+      } 
     });
     
 
   } catch (err) {
     console.error('Error al cargar producto:', err);
-    alert('No se pudo cargar el producto');
+    Swal.fire({
+      icon: 'error',
+      title: 'Error al cargar el producto',
+      text: 'Revisa tu conexión o intenta más tarde.',
+      confirmButtonColor: '#d33'
+    });
   }
 
   document.body.classList.remove('cargando');

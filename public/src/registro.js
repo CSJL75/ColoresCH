@@ -10,7 +10,11 @@ document.getElementById('formRegistro').addEventListener('submit', async (e) => 
     const confirmar = document.getElementById('confirmarContrasena').value;
   
     if (contrasena !== confirmar) {
-      return alert('Las contraseñas no coinciden');
+      return Swal.fire({
+        icon: 'warning',
+        title: 'Las contraseñas no coinciden',
+        confirmButtonColor: '#d33'
+      });
     }
   
     try {
@@ -23,13 +27,29 @@ document.getElementById('formRegistro').addEventListener('submit', async (e) => 
       const data = await res.json();
   
       if (res.ok) {
-        alert('Registro exitoso. Revisa tu correo.');
-        window.location.href = '/sesion.html';
+        Swal.fire({
+          icon: 'success',
+          title: 'Registro exitoso',
+          text: 'Revisa tu correo para confirmar tu cuenta.',
+          confirmButtonColor: '#3085d6'
+        }).then(() => {
+          window.location.href = '/sesion.html';
+        });
       } else {
-        alert(data.error || 'Error al registrarse');
+        Swal.fire({
+          icon: 'error',
+          title: 'Error al registrarse',
+          text: data.error || 'Hubo un problema al procesar tu registro.',
+          confirmButtonColor: '#d33'
+        });
       }
     } catch (error) {
       console.error('Error de red:', error);
-      alert('Hubo un error al registrar');
+      Swal.fire({
+        icon: 'error',
+        title: 'Error de red',
+        text: 'No se pudo conectar con el servidor.',
+        confirmButtonColor: '#d33'
+      });
     }
   });

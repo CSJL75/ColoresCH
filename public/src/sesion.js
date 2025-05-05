@@ -27,7 +27,13 @@ document.getElementById('form-sesion').addEventListener('submit', async (e) => {
   
     } catch (error) {
       console.error('Error:', error);
-      alert(error.message || 'Error al iniciar sesión');
-      localStorage.removeItem('userData');
-    }
+    localStorage.removeItem('userData');
+
+    Swal.fire({
+      icon: 'error',
+      title: 'Error al iniciar sesión',
+      text: error.message || 'No se pudo conectar con el servidor',
+      confirmButtonColor: '#d33'
+    });
+  }
 });

@@ -4,6 +4,12 @@ export async function cargarHeader() {
   document.getElementById('header-container').innerHTML = headerHTML;
   console.log("Iniciando carga de header"); // 👈 1
   await actualizarContadorCarrito();
+
+  const script = document.createElement('script');
+  script.src = "https://cdn.jsdelivr.net/npm/sweetalert2@11";
+  script.onload = () => console.log("✅ SweetAlert2 cargado");
+  document.head.appendChild(script);  
+  
   try {
     console.log("Consultando /api/usuario"); // 👈 2
     const usuarioRes = await fetch('http://localhost:3000/api/usuario', { // 👈 URL absoluta

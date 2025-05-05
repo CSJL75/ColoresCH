@@ -1,0 +1,25 @@
+.swal2-popup {
+    font-family: 'Segoe UI', sans-serif;
+    border-radius: 12px !important;
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15);
+    padding: 1.5rem !important;
+    background-color: #fffdfb;
+  }
+  
+  .swal2-title {
+    color: #a4243c;
+    font-weight: bold;
+  }
+  
+  .swal2-confirm {
+    background-color: #a4243c !important;
+    border: none !important;
+    border-radius: 8px !important;
+    padding: 0.6rem 1.4rem !important;
+  }
+  
+  .swal2-cancel {
+    border-radius: 8px !important;
+    padding: 0.6rem 1.4rem !important;
+  }
+  

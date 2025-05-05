@@ -87,7 +87,7 @@ router.get('/carrito', async (req, res) => {
   
     try {
       const usuario_id = req.session.usuario?.id || null;
-      const sesion_id = usuario_id ? null : req.sessionID;
+      const sesion_id = usuario_id ? `usuario:${usuario_id}` : req.sessionID;
   
       // Buscar o crear carrito
       let carritoId;

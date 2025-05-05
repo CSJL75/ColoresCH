@@ -24,6 +24,12 @@ document.addEventListener('DOMContentLoaded', async () => {
 
   } catch (error) {
     console.error('Error al cargar la tienda:', error);
+    Swal.fire({
+      icon: 'error',
+      title: 'Error al cargar la tienda',
+      text: 'Ocurrió un problema al obtener los productos. Intenta más tarde.',
+      confirmButtonColor: '#d33'
+    }); 
   }
 });
 
@@ -173,6 +179,12 @@ async function aplicarFiltros() {
     
   } catch (error) {
     console.error('Error al aplicar filtros:', error);
+    Swal.fire({
+      icon: 'error',
+      title: 'No se pudieron aplicar los filtros',
+      text: 'Verifica tu conexión o intenta nuevamente.',
+      confirmButtonColor: '#d33'
+    });
   }
 }
 

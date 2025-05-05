@@ -14,6 +14,12 @@ document.addEventListener('DOMContentLoaded', async () => {
     });
     if (!res.ok) {
       console.error('❌ Error al obtener carrito');
+      Swal.fire({
+        icon: 'error',
+        title: 'No se pudo cargar tu carrito',
+        text: 'Intenta más tarde.',
+        confirmButtonColor: '#d33'
+      });
       return { carrito_id: null, items: [] };
     }
     const data = await res.json();
@@ -192,10 +198,21 @@ document.addEventListener('DOMContentLoaded', async () => {
   
     const data = await res.json();
     if (res.ok) {
-      alert('Compra finalizada. Revisa tu correo.');
-      window.location.href = '/tienda.html';
+      Swal.fire({
+        icon: 'success',
+        title: '¡Compra completada!',
+        text: 'Revisa tu correo electrónico para más detalles.',
+        confirmButtonColor: '#3085d6'
+      }).then(() => {
+        window.location.href = '/tienda.html';
+      });
     } else {
-      alert(data.error || 'Error al finalizar la compra');
+      Swal.fire({
+        icon: 'error',
+        title: 'Error al finalizar la compra',
+        text: data.error || 'Intenta nuevamente.',
+        confirmButtonColor: '#d33'
+      });
     }
   });
 
@@ -226,6 +243,14 @@ document.addEventListener('DOMContentLoaded', async () => {
     });
 
     await cargarCarrito();
+    Swal.fire({
+      toast: true,
+      position: 'top-end',
+      icon: 'info',
+      title: 'Producto eliminado del carrito',
+      showConfirmButton: false,
+      timer: 1500
+    });    
     await cargarDirecciones();
   };
 
